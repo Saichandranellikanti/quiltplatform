@@ -9,16 +9,26 @@ const HeroSection: React.FC = () => {
       <div className="absolute inset-0 bg-black/10"></div>
       <div className="relative container mx-auto px-4 py-20 md:py-32">
         <div className="max-w-4xl mx-auto text-center">
-          {/* Logo */}
-          <div className="mb-8 animate-fade-in">
-            <QuiltLogo className="justify-center" size="lg" />
+          {/* Quilt Pattern Header */}
+          <div className="mb-8 animate-fade-in flex justify-center">
+            <div className="grid grid-cols-4 gap-2 mb-4">
+              <div className="w-8 h-8 bg-white/20 rounded-lg"></div>
+              <div className="w-8 h-8 bg-white/30 rounded-lg"></div>
+              <div className="w-8 h-8 bg-white/20 rounded-lg"></div>
+              <div className="w-8 h-8 bg-white/30 rounded-lg"></div>
+            </div>
+          </div>
+          
+          {/* Brand Name */}
+          <div className="mb-8">
+            <h1 className="text-6xl md:text-8xl font-bold text-white mb-2">Quilt</h1>
           </div>
           
           {/* Tagline */}
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 animate-slide-up">
+          <h2 className="text-3xl md:text-5xl font-bold mb-6 animate-slide-up">
             Every piece of your business,{' '}
             <span className="text-yellow-200">stitched together</span>
-          </h1>
+          </h2>
           
           {/* Subtitle */}
           <p className="text-xl md:text-2xl text-white/90 mb-12 max-w-3xl mx-auto animate-slide-up">
@@ -36,9 +46,8 @@ const HeroSection: React.FC = () => {
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button 
-              variant="outline" 
               size="lg"
-              className="border-white/30 text-white hover:bg-white/10"
+              className="bg-white/20 text-white border border-white/30 hover:bg-white/30 backdrop-blur-sm"
             >
               <Play className="mr-2 h-5 w-5" />
               Watch Demo

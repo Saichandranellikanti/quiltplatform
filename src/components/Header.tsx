@@ -30,7 +30,7 @@ const Header: React.FC = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center">
-            <QuiltLogo size="sm" />
+            <QuiltLogo variant="text" size="sm" />
           </Link>
 
           {/* Desktop Navigation */}

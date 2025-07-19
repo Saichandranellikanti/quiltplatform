@@ -1,5 +1,6 @@
 import React from 'react';
 import { Users, BarChart3, FileText, CreditCard, Settings } from 'lucide-react';
+import QuiltPattern from '../QuiltPattern';
 
 const IntroSection: React.FC = () => {
   const highlights = [
@@ -31,8 +32,16 @@ const IntroSection: React.FC = () => {
   ];
 
   return (
-    <section className="py-20 bg-gradient-section">
-      <div className="container mx-auto px-4">
+    <section className="py-20 bg-gradient-section relative overflow-hidden">
+      {/* Background Quilt Patterns */}
+      <div className="absolute top-10 left-10 opacity-20">
+        <QuiltPattern variant="subtle" size="lg" />
+      </div>
+      <div className="absolute bottom-10 right-10 opacity-20">
+        <QuiltPattern variant="outline" size="md" />
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
             Built for small businesses that think big

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Button } from '../ui/button';
 import { ArrowRight, Users, Briefcase, FileText, CreditCard, BarChart } from 'lucide-react';
+import QuiltPattern from '../QuiltPattern';
 
 const FeaturesPreview: React.FC = () => {
   const features = [
@@ -42,8 +43,16 @@ const FeaturesPreview: React.FC = () => {
   ];
 
   return (
-    <section className="py-20 bg-background">
-      <div className="container mx-auto px-4">
+    <section className="py-20 bg-background relative overflow-hidden">
+      {/* Background Decorative Elements */}
+      <div className="absolute top-20 right-20 opacity-10">
+        <QuiltPattern variant="colorful" size="lg" />
+      </div>
+      <div className="absolute bottom-20 left-20 opacity-10">
+        <QuiltPattern variant="outline" size="md" />
+      </div>
+      
+      <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-4xl mx-auto text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
             Powerful modules that work together

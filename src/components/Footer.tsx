@@ -12,8 +12,8 @@ const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Section */}
           <div className="lg:col-span-1">
-            <div className="mb-6">
-              <QuiltLogo className="text-white" />
+            <div className="mb-6 flex items-center gap-3">
+              <QuiltLogo variant="text" className="text-white" />
             </div>
             <p className="text-sm text-white/80 mb-6">
               Every piece of your business, stitched together. 
