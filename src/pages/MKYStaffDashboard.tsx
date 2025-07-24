@@ -17,6 +17,7 @@ import {
 import MKYLogo from '@/components/MKYLogo';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const MKYStaffDashboard: React.FC = () => {
   const { signOut, user, profile } = useAuth();
@@ -44,14 +45,40 @@ const MKYStaffDashboard: React.FC = () => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: Save to GSheet (to be linked later)
-    setIsSubmitted(true);
-    toast({
-      title: "Booking Created Successfully",
-      description: "Your booking has been submitted and saved to the system.",
-    });
+    setIsSubmitted(false);
+    
+    try {
+      // Call the edge function to save booking
+      const { data, error } = await supabase.functions.invoke('save-booking', {
+        body: {
+          bookingData: formData,
+          userEmail: user?.email
+        }
+      });
+
+      if (error) {
+        throw error;
+      }
+
+      if (data.success) {
+        setIsSubmitted(true);
+        toast({
+          title: "Booking Created Successfully",
+          description: `Booking ${data.bookingNo} has been saved to the system.`,
+        });
+      } else {
+        throw new Error(data.error || 'Failed to save booking');
+      }
+    } catch (error) {
+      console.error('Error saving booking:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save booking. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   if (isSubmitted) {
