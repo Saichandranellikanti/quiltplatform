@@ -84,8 +84,8 @@ const Header: React.FC = () => {
                 <Button variant="ghost" size="sm">
                   Book a Demo
                 </Button>
-                <Button variant="hero" size="sm">
-                  Try Quilt Free
+                <Button variant="hero" size="sm" asChild>
+                  <Link to="/auth">Sign In</Link>
                 </Button>
               </>
             )}
@@ -140,8 +140,8 @@ const Header: React.FC = () => {
                     <Button variant="ghost" size="sm">
                       Book a Demo
                     </Button>
-                    <Button variant="hero" size="sm">
-                      Try Quilt Free
+                    <Button variant="hero" size="sm" asChild>
+                      <Link to="/auth">Sign In</Link>
                     </Button>
                   </>
                 )}
