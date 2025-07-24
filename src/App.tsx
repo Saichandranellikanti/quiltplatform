@@ -19,12 +19,13 @@ import BillingDashboard from "./pages/BillingDashboard";
 import CRMDashboard from "./pages/CRMDashboard";
 import MKYAdminDashboard from "./pages/MKYAdminDashboard";
 import MKYStaffDashboard from "./pages/MKYStaffDashboard";
-import TenantRedirect from "./components/TenantRedirect";
+import TenantGateway from "./components/TenantGateway";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
-
-const App = () => (
+const App = () => {
+  const queryClient = new QueryClient();
+  
+  return (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <AuthProvider>
@@ -32,7 +33,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<TenantRedirect><Home /></TenantRedirect>} />
+            <Route path="/" element={<TenantGateway />} />
             <Route path="/features" element={<Features />} />
             <Route path="/use-cases" element={<UseCases />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
@@ -54,6 +55,7 @@ const App = () => (
       </AuthProvider>
     </TooltipProvider>
   </QueryClientProvider>
-);
+  );
+};
 
 export default App;
