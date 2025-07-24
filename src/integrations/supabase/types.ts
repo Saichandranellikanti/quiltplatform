@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       users: {
         Row: {
+          company: string | null
           created_at: string
           email: string
           id: string
@@ -25,6 +26,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          company?: string | null
           created_at?: string
           email: string
           id?: string
@@ -34,6 +36,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          company?: string | null
           created_at?: string
           email?: string
           id?: string
@@ -52,6 +55,10 @@ export type Database = {
       get_current_user_role: {
         Args: Record<PropertyKey, never>
         Returns: string
+      }
+      is_mky_user: {
+        Args: { user_email: string; user_company: string }
+        Returns: boolean
       }
     }
     Enums: {

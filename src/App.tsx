@@ -17,6 +17,9 @@ import AdminDashboard from "./pages/AdminDashboard";
 import BookingsDashboard from "./pages/BookingsDashboard";
 import BillingDashboard from "./pages/BillingDashboard";
 import CRMDashboard from "./pages/CRMDashboard";
+import MKYAdminDashboard from "./pages/MKYAdminDashboard";
+import MKYStaffDashboard from "./pages/MKYStaffDashboard";
+import TenantRedirect from "./components/TenantRedirect";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -29,7 +32,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<Home />} />
+            <Route path="/" element={<TenantRedirect><Home /></TenantRedirect>} />
             <Route path="/features" element={<Features />} />
             <Route path="/use-cases" element={<UseCases />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
@@ -42,6 +45,8 @@ const App = () => (
             <Route path="/bookings-dashboard" element={<BookingsDashboard />} />
             <Route path="/billing-dashboard" element={<BillingDashboard />} />
             <Route path="/crm-dashboard" element={<CRMDashboard />} />
+            <Route path="/mky-admin" element={<MKYAdminDashboard />} />
+            <Route path="/mky-staff" element={<MKYStaffDashboard />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

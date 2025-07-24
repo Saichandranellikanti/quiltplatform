@@ -58,6 +58,10 @@ export default {
 					green: 'hsl(var(--quilt-green))',
 					navy: 'hsl(var(--quilt-navy))'
 				},
+				mky: {
+					navy: 'hsl(var(--mky-navy))',
+					'navy-foreground': 'hsl(var(--mky-navy-foreground))'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',

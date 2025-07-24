@@ -8,6 +8,7 @@ interface UserProfile {
   name: string;
   role: 'Admin' | 'Staff' | 'Finance' | 'CRMUser';
   status: 'Active' | 'Inactive';
+  company?: string;
 }
 
 interface AuthContextType {
