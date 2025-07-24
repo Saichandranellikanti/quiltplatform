@@ -2,12 +2,15 @@ import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from './ui/button';
 import QuiltLogo from './QuiltLogo';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { Alert, AlertDescription } from './ui/alert';
 
 const Header: React.FC = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { user, profile, signOut } = useAuth();
 
   const navItems = [
     { href: '/', label: 'Home' },
@@ -24,8 +27,20 @@ const Header: React.FC = () => {
     return location.pathname.startsWith(path);
   };
 
+  const handleSignOut = async () => {
+    await signOut();
+    window.location.href = '/auth';
+  };
+
   return (
     <header className="bg-card/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
+      {profile?.status === 'Inactive' && (
+        <Alert variant="destructive" className="rounded-none border-x-0 border-t-0">
+          <AlertDescription>
+            Your account is inactive. Please contact admin.
+          </AlertDescription>
+        </Alert>
+      )}
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
@@ -50,14 +65,30 @@ const Header: React.FC = () => {
             ))}
           </nav>
 
-          {/* CTA Buttons */}
+          {/* User Info and Actions */}
           <div className="hidden lg:flex items-center space-x-4">
-            <Button variant="ghost" size="sm">
-              Book a Demo
-            </Button>
-            <Button variant="hero" size="sm">
-              Try Quilt Free
-            </Button>
+            {user && profile ? (
+              <>
+                <div className="flex items-center space-x-2 text-sm">
+                  <User className="h-4 w-4" />
+                  <span>{profile.name}</span>
+                  <span className="text-muted-foreground">({profile.role})</span>
+                </div>
+                <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="ghost" size="sm">
+                  Book a Demo
+                </Button>
+                <Button variant="hero" size="sm">
+                  Try Quilt Free
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -92,12 +123,28 @@ const Header: React.FC = () => {
                 </Link>
               ))}
               <div className="flex flex-col space-y-2 pt-4">
-                <Button variant="ghost" size="sm">
-                  Book a Demo
-                </Button>
-                <Button variant="hero" size="sm">
-                  Try Quilt Free
-                </Button>
+                {user && profile ? (
+                  <>
+                    <div className="flex items-center space-x-2 text-sm py-2">
+                      <User className="h-4 w-4" />
+                      <span>{profile.name}</span>
+                      <span className="text-muted-foreground">({profile.role})</span>
+                    </div>
+                    <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                      <LogOut className="h-4 w-4 mr-2" />
+                      Sign Out
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button variant="ghost" size="sm">
+                      Book a Demo
+                    </Button>
+                    <Button variant="hero" size="sm">
+                      Try Quilt Free
+                    </Button>
+                  </>
+                )}
               </div>
             </nav>
           </div>
