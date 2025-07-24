@@ -2,9 +2,8 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Auth from "./pages/Auth";
-import MKYAdminDashboard from "./pages/MKYAdminDashboard";
-import MKYStaffDashboard from "./pages/MKYStaffDashboard";
-import AccessDenied from "./pages/AccessDenied";
+import SimpleAccessDenied from "./components/SimpleAccessDenied";
+import SimpleMKYAdminDashboard from "./components/SimpleMKYAdminDashboard";
 import NotFound from "./pages/NotFound";
 
 const App = () => {
@@ -15,9 +14,8 @@ const App = () => {
         <Routes>
           <Route path="/" element={<div>Home Page</div>} />
           <Route path="/auth" element={<Auth />} />
-          <Route path="/mky-admin" element={<MKYAdminDashboard />} />
-          <Route path="/mky-staff" element={<MKYStaffDashboard />} />
-          <Route path="/access-denied" element={<AccessDenied />} />
+          <Route path="/mky-admin" element={<SimpleMKYAdminDashboard />} />
+          <Route path="/access-denied" element={<SimpleAccessDenied />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
