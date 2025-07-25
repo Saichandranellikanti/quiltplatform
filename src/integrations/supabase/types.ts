@@ -14,6 +14,118 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          booking_data: Json
+          created_at: string
+          id: string
+          status: string
+          task_template_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          booking_data: Json
+          created_at?: string
+          id?: string
+          status?: string
+          task_template_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          booking_data?: Json
+          created_at?: string
+          id?: string
+          status?: string
+          task_template_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_task_template_id_fkey"
+            columns: ["task_template_id"]
+            isOneToOne: false
+            referencedRelation: "task_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      field_definitions: {
+        Row: {
+          created_at: string
+          field_label: string
+          field_name: string
+          field_options: Json | null
+          field_order: number
+          field_type: Database["public"]["Enums"]["field_type"]
+          id: string
+          is_required: boolean
+          task_template_id: string
+        }
+        Insert: {
+          created_at?: string
+          field_label: string
+          field_name: string
+          field_options?: Json | null
+          field_order?: number
+          field_type: Database["public"]["Enums"]["field_type"]
+          id?: string
+          is_required?: boolean
+          task_template_id: string
+        }
+        Update: {
+          created_at?: string
+          field_label?: string
+          field_name?: string
+          field_options?: Json | null
+          field_order?: number
+          field_type?: Database["public"]["Enums"]["field_type"]
+          id?: string
+          is_required?: boolean
+          task_template_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "field_definitions_task_template_id_fkey"
+            columns: ["task_template_id"]
+            isOneToOne: false
+            referencedRelation: "task_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      task_templates: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          type: Database["public"]["Enums"]["task_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          type: Database["public"]["Enums"]["task_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          type?: Database["public"]["Enums"]["task_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       users: {
         Row: {
           company: string | null
@@ -62,7 +174,14 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      field_type:
+        | "text"
+        | "number"
+        | "date"
+        | "select"
+        | "checkbox"
+        | "textarea"
+      task_type: "GRIMALDI_SHIPPING" | "ORIENT_SHIPPING" | "GENERAL_SHIPPING"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -189,6 +308,9 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      field_type: ["text", "number", "date", "select", "checkbox", "textarea"],
+      task_type: ["GRIMALDI_SHIPPING", "ORIENT_SHIPPING", "GENERAL_SHIPPING"],
+    },
   },
 } as const
