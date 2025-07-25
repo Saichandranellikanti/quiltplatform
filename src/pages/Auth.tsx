@@ -19,23 +19,8 @@ const Auth: React.FC = () => {
 
   useEffect(() => {
     if (!loading && user && profile) {
-      // Redirect based on role
-      switch (profile.role) {
-        case 'Admin':
-          navigate('/admin-dashboard');
-          break;
-        case 'Staff':
-          navigate('/bookings-dashboard');
-          break;
-        case 'Finance':
-          navigate('/billing-dashboard');
-          break;
-        case 'CRMUser':
-          navigate('/crm-dashboard');
-          break;
-        default:
-          navigate('/access-denied');
-      }
+      // Redirect to tenant gateway which will handle proper routing
+      navigate('/');
     } else if (!loading && user && !profile) {
       // User exists but not in our users table
       navigate('/access-denied');
