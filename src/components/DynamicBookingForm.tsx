@@ -307,11 +307,131 @@ const DynamicBookingForm: React.FC<DynamicBookingFormProps> = ({ onSubmit }) => 
             </Select>
           </div>
 
+          {/* Standard Shipping Fields */}
+          {selectedTemplate && (
+            <div className="space-y-4">
+              <div className="border-t pt-4">
+                <h3 className="text-lg font-medium mb-4">Standard Shipping Information</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="client_address">Client Address *</Label>
+                    <Textarea
+                      id="client_address"
+                      value={formData.client_address || ''}
+                      onChange={(e) => handleFieldChange('client_address', e.target.value)}
+                      placeholder="Enter client's full address"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="cargo_description">Cargo Description *</Label>
+                    <Textarea
+                      id="cargo_description"
+                      value={formData.cargo_description || ''}
+                      onChange={(e) => handleFieldChange('cargo_description', e.target.value)}
+                      placeholder="Describe the cargo being shipped"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="vat_id">VAT ID</Label>
+                    <Input
+                      id="vat_id"
+                      value={formData.vat_id || ''}
+                      onChange={(e) => handleFieldChange('vat_id', e.target.value)}
+                      placeholder="Enter VAT ID"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="exporter_tax_id">Exporter Tax ID</Label>
+                    <Input
+                      id="exporter_tax_id"
+                      value={formData.exporter_tax_id || ''}
+                      onChange={(e) => handleFieldChange('exporter_tax_id', e.target.value)}
+                      placeholder="Enter exporter tax ID"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="importer_tax_id">Importer Tax ID</Label>
+                    <Input
+                      id="importer_tax_id"
+                      value={formData.importer_tax_id || ''}
+                      onChange={(e) => handleFieldChange('importer_tax_id', e.target.value)}
+                      placeholder="Enter importer tax ID"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="units">Units *</Label>
+                    <Input
+                      id="units"
+                      type="number"
+                      value={formData.units || ''}
+                      onChange={(e) => handleFieldChange('units', e.target.value)}
+                      placeholder="Number of units"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="weight_kg">Weight (kg) *</Label>
+                    <Input
+                      id="weight_kg"
+                      type="number"
+                      step="0.01"
+                      value={formData.weight_kg || ''}
+                      onChange={(e) => handleFieldChange('weight_kg', e.target.value)}
+                      placeholder="Weight in kilograms"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="port_of_loading">Port of Loading *</Label>
+                    <Input
+                      id="port_of_loading"
+                      value={formData.port_of_loading || ''}
+                      onChange={(e) => handleFieldChange('port_of_loading', e.target.value)}
+                      placeholder="Enter port of loading"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="port_of_discharge">Port of Discharge *</Label>
+                    <Input
+                      id="port_of_discharge"
+                      value={formData.port_of_discharge || ''}
+                      onChange={(e) => handleFieldChange('port_of_discharge', e.target.value)}
+                      placeholder="Enter port of discharge"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="marks">Marks</Label>
+                    <Textarea
+                      id="marks"
+                      value={formData.marks || ''}
+                      onChange={(e) => handleFieldChange('marks', e.target.value)}
+                      placeholder="Enter cargo marks and numbers"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Dynamic Fields */}
           {fieldDefinitions.length > 0 && (
             <div className="space-y-4">
               <div className="border-t pt-4">
-                <h3 className="text-lg font-medium mb-4">Booking Details</h3>
+                <h3 className="text-lg font-medium mb-4">Additional Route-Specific Details</h3>
                 {fieldDefinitions.map(renderField)}
               </div>
             </div>
