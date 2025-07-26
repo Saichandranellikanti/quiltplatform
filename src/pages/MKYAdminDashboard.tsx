@@ -13,7 +13,8 @@ import {
   DollarSign,
   Filter,
   LogOut,
-  Eye 
+  Eye,
+  Settings
 } from 'lucide-react';
 import MKYLogo from '@/components/MKYLogo';
 import { useAuth } from '@/hooks/useAuth';
@@ -295,16 +296,25 @@ const MKYAdminDashboard: React.FC = () => {
 
                 <div className="pt-2 border-t">
                   <h4 className="text-sm font-medium text-mky-navy mb-2">Quick Actions</h4>
-                  <div className="space-y-2">
-                    <Button variant="outline" size="sm" className="w-full border-mky-navy text-mky-navy hover:bg-mky-navy hover:text-white">
-                      <Download className="h-4 w-4 mr-2" />
-                      Export Data
-                    </Button>
-                    <Button variant="outline" size="sm" className="w-full border-mky-navy text-mky-navy hover:bg-mky-navy hover:text-white">
-                      <Users className="h-4 w-4 mr-2" />
-                      Manage Users
-                    </Button>
-                  </div>
+                   <div className="space-y-2">
+                     <Button 
+                       variant="outline" 
+                       size="sm" 
+                       className="w-full border-mky-navy text-mky-navy hover:bg-mky-navy hover:text-white"
+                       onClick={() => window.location.href = '/document-management'}
+                     >
+                       <Settings className="h-4 w-4 mr-2" />
+                       Document Management
+                     </Button>
+                     <Button variant="outline" size="sm" className="w-full border-mky-navy text-mky-navy hover:bg-mky-navy hover:text-white">
+                       <Download className="h-4 w-4 mr-2" />
+                       Export Data
+                     </Button>
+                     <Button variant="outline" size="sm" className="w-full border-mky-navy text-mky-navy hover:bg-mky-navy hover:text-white">
+                       <Users className="h-4 w-4 mr-2" />
+                       Manage Users
+                     </Button>
+                   </div>
                 </div>
               </CardContent>
             </Card>

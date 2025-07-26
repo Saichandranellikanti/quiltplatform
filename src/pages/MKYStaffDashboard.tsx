@@ -3,7 +3,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LogOut } from 'lucide-react';
+import { LogOut, Settings } from 'lucide-react';
 import MKYLogo from '@/components/MKYLogo';
 import { useAuth } from '@/hooks/useAuth';
 import DynamicBookingForm from '@/components/DynamicBookingForm';
@@ -110,6 +110,21 @@ const MKYStaffDashboard: React.FC = () => {
                 {taskTemplates.length === 0 && (
                   <p className="text-muted-foreground">Loading routes...</p>
                 )}
+              </div>
+            </div>
+
+            <div className="bg-card rounded-lg border p-6">
+              <h3 className="text-lg font-medium mb-3">Quick Actions</h3>
+              <div className="space-y-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="w-full border-mky-navy text-mky-navy hover:bg-mky-navy hover:text-white"
+                  onClick={() => window.location.href = '/document-management'}
+                >
+                  <Settings className="h-4 w-4 mr-2" />
+                  Document Management
+                </Button>
               </div>
             </div>
 
