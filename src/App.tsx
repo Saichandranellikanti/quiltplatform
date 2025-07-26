@@ -8,6 +8,7 @@ import MKYAdminDashboard from "./pages/MKYAdminDashboard";
 import MKYStaffDashboard from "./pages/MKYStaffDashboard";
 import DocumentManagement from "./pages/DocumentManagement";
 import DocumentFieldsConfig from "./pages/DocumentFieldsConfig";
+import DocumentGenerator from "./pages/DocumentGenerator";
 import TenantGateway from "./components/TenantGateway";
 import NotFound from "./pages/NotFound";
 import Features from "./pages/Features";
@@ -31,6 +32,7 @@ const App = () => {
             <Route path="/mky-staff" element={<MKYStaffDashboard />} />
             <Route path="/document-management" element={<DocumentManagement />} />
             <Route path="/document-fields/:templateId" element={<DocumentFieldsConfig />} />
+            <Route path="/generate-documents/:bookingId" element={<DocumentGenerator />} />
             <Route path="/features" element={<Features />} />
             <Route path="/use-cases" element={<UseCases />} />
             <Route path="/how-it-works" element={<HowItWorks />} />

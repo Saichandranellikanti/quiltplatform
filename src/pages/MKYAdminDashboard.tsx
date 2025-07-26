@@ -14,7 +14,8 @@ import {
   Filter,
   LogOut,
   Eye,
-  Settings
+  Settings,
+  File
 } from 'lucide-react';
 import MKYLogo from '@/components/MKYLogo';
 import { useAuth } from '@/hooks/useAuth';
@@ -205,15 +206,16 @@ const MKYAdminDashboard: React.FC = () => {
               <CardContent>
                 {filteredBookings.length > 0 ? (
                   <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Route</TableHead>
-                        <TableHead>Client</TableHead>
-                        <TableHead>Status</TableHead>
-                        <TableHead>Staff</TableHead>
-                        <TableHead>Submitted</TableHead>
-                      </TableRow>
-                    </TableHeader>
+                     <TableHeader>
+                       <TableRow>
+                         <TableHead>Route</TableHead>
+                         <TableHead>Client</TableHead>
+                         <TableHead>Status</TableHead>
+                         <TableHead>Staff</TableHead>
+                         <TableHead>Submitted</TableHead>
+                         <TableHead>Actions</TableHead>
+                       </TableRow>
+                     </TableHeader>
                     <TableBody>
                       {filteredBookings.map((booking) => (
                         <TableRow key={booking.id}>
@@ -231,10 +233,20 @@ const MKYAdminDashboard: React.FC = () => {
                           <TableCell>
                             Staff User
                           </TableCell>
-                          <TableCell>
-                            {new Date(booking.created_at).toLocaleDateString()} {' '}
-                            {new Date(booking.created_at).toLocaleTimeString()}
-                          </TableCell>
+                           <TableCell>
+                             {new Date(booking.created_at).toLocaleDateString()} {' '}
+                             {new Date(booking.created_at).toLocaleTimeString()}
+                           </TableCell>
+                           <TableCell>
+                             <Button
+                               size="sm"
+                               onClick={() => window.location.href = `/generate-documents/${booking.id}`}
+                               className="bg-mky-navy hover:bg-mky-navy/90"
+                             >
+                               <File className="h-3 w-3 mr-1" />
+                               Generate Docs
+                             </Button>
+                           </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
