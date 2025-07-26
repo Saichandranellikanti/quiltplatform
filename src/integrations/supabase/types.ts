@@ -181,7 +181,13 @@ export type Database = {
         | "select"
         | "checkbox"
         | "textarea"
-      task_type: "GRIMALDI_SHIPPING" | "ORIENT_SHIPPING" | "GENERAL_SHIPPING"
+      task_type:
+        | "GRIMALDI_SHIPPING"
+        | "ORIENT_SHIPPING"
+        | "GENERAL_SHIPPING"
+        | "LABELS"
+        | "BLC"
+        | "DELIVERY_PERMITS"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -310,7 +316,14 @@ export const Constants = {
   public: {
     Enums: {
       field_type: ["text", "number", "date", "select", "checkbox", "textarea"],
-      task_type: ["GRIMALDI_SHIPPING", "ORIENT_SHIPPING", "GENERAL_SHIPPING"],
+      task_type: [
+        "GRIMALDI_SHIPPING",
+        "ORIENT_SHIPPING",
+        "GENERAL_SHIPPING",
+        "LABELS",
+        "BLC",
+        "DELIVERY_PERMITS",
+      ],
     },
   },
 } as const

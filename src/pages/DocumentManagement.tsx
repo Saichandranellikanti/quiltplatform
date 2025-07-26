@@ -56,7 +56,7 @@ const DocumentManagement: React.FC = () => {
       const { data, error } = await supabase
         .from('task_templates')
         .select('*')
-        .in('type', ['LABELS', 'BLC', 'DELIVERY_PERMITS'])
+        .in('type', ['LABELS', 'BLC', 'DELIVERY_PERMITS'] as any)
         .order('created_at', { ascending: false });
 
       if (error) throw error;
@@ -80,7 +80,7 @@ const DocumentManagement: React.FC = () => {
         .from('task_templates')
         .insert({
           name: newTemplate.name,
-          type: newTemplate.type,
+          type: newTemplate.type as any,
           description: newTemplate.description,
           is_active: true
         });
