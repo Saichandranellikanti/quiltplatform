@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { 
   Calendar, 
   FileText, 
@@ -11,13 +12,85 @@ import {
   Ship, 
   DollarSign,
   Filter,
-  LogOut 
+  LogOut,
+  Eye 
 } from 'lucide-react';
 import MKYLogo from '@/components/MKYLogo';
 import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
 
 const MKYAdminDashboard: React.FC = () => {
   const { signOut, user, profile } = useAuth();
+  const [bookings, setBookings] = useState<any[]>([]);
+  const [taskTemplates, setTaskTemplates] = useState<any[]>([]);
+  const [selectedRoute, setSelectedRoute] = useState<string>('');
+  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [totalBookings, setTotalBookings] = useState(0);
+
+  useEffect(() => {
+    fetchBookings();
+    fetchTaskTemplates();
+    
+    // Set up real-time subscription for bookings
+    const bookingsChannel = supabase
+      .channel('bookings_changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'bookings'
+        },
+        () => {
+          fetchBookings(); // Refresh bookings when any change occurs
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(bookingsChannel);
+    };
+  }, []);
+
+  const fetchBookings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('bookings')
+        .select(`
+          *,
+          task_templates (name),
+          users (name, email)
+        `)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setBookings(data || []);
+      setTotalBookings(data?.length || 0);
+    } catch (error) {
+      console.error('Error fetching bookings:', error);
+    }
+  };
+
+  const fetchTaskTemplates = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('task_templates')
+        .select('*')
+        .eq('is_active', true)
+        .order('name');
+
+      if (error) throw error;
+      setTaskTemplates(data || []);
+    } catch (error) {
+      console.error('Error fetching task templates:', error);
+    }
+  };
+
+  const filteredBookings = bookings.filter(booking => {
+    const routeMatch = !selectedRoute || booking.task_template_id === selectedRoute;
+    const statusMatch = !selectedStatus || booking.status.toLowerCase() === selectedStatus;
+    return routeMatch && statusMatch;
+  });
 
   return (
     <div className="min-h-screen bg-background">
@@ -62,9 +135,9 @@ const MKYAdminDashboard: React.FC = () => {
                   <Calendar className="h-4 w-4 text-mky-navy" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-mky-navy">0</div>
+                  <div className="text-2xl font-bold text-mky-navy">{totalBookings}</div>
                   <p className="text-xs text-muted-foreground">
-                    No bookings yet
+                    {totalBookings === 0 ? 'No bookings yet' : 'Total submitted'}
                   </p>
                 </CardContent>
               </Card>
@@ -115,45 +188,66 @@ const MKYAdminDashboard: React.FC = () => {
               </Card>
             </div>
 
-            {/* Action Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Users className="h-5 w-5 text-mky-navy" />
-                    View/Edit Users Table
-                  </CardTitle>
-                  <CardDescription>
-                    Manage user accounts, roles, and permissions
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button className="w-full bg-mky-navy hover:bg-mky-navy/90">
-                    Access User Management
-                  </Button>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Download className="h-5 w-5 text-mky-navy" />
-                    Download Reports
-                  </CardTitle>
-                  <CardDescription>
-                    Export data to Google Sheets and generate reports
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Button variant="outline" className="w-full border-mky-navy text-mky-navy hover:bg-mky-navy hover:text-white">
-                    Export to GSheet
-                  </Button>
-                </CardContent>
-              </Card>
-            </div>
+            {/* Live Bookings Table */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Eye className="h-5 w-5 text-mky-navy" />
+                  Live Bookings ({filteredBookings.length})
+                </CardTitle>
+                <CardDescription>
+                  Real-time view of all staff submissions
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {filteredBookings.length > 0 ? (
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Route</TableHead>
+                        <TableHead>Client</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Staff</TableHead>
+                        <TableHead>Submitted</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredBookings.map((booking) => (
+                        <TableRow key={booking.id}>
+                          <TableCell className="font-medium">
+                            {booking.task_templates?.name || 'Unknown Route'}
+                          </TableCell>
+                          <TableCell>
+                            {booking.booking_data?.client_name || 'No client name'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={booking.status === 'Submitted' ? 'default' : 'secondary'}>
+                              {booking.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            {booking.users?.name || booking.users?.email || 'Unknown'}
+                          </TableCell>
+                          <TableCell>
+                            {new Date(booking.created_at).toLocaleDateString()} {' '}
+                            {new Date(booking.created_at).toLocaleTimeString()}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <Ship className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                    <p>No bookings found</p>
+                    <p className="text-sm">Staff submissions will appear here in real-time</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Side Panel */}
+          {/* Side Panel - Live Filters */}
           <div className="lg:col-span-1">
             <Card>
               <CardHeader>
@@ -162,35 +256,54 @@ const MKYAdminDashboard: React.FC = () => {
                   Filter Bookings
                 </CardTitle>
                 <CardDescription>
-                  Filter by port and status
+                  Filter by shipping route and status
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
-                  <label className="text-sm font-medium text-mky-navy">Port of Discharge</label>
-                  <select className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-mky-navy focus:border-mky-navy">
-                    <option value="">All Ports</option>
-                    <option value="CNSHA">Shanghai, China</option>
-                    <option value="USLAX">Los Angeles, USA</option>
-                    <option value="DEHAM">Hamburg, Germany</option>
-                    <option value="SGSIN">Singapore</option>
+                  <label className="text-sm font-medium text-mky-navy">Shipping Route</label>
+                  <select 
+                    value={selectedRoute}
+                    onChange={(e) => setSelectedRoute(e.target.value)}
+                    className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-mky-navy focus:border-mky-navy"
+                  >
+                    <option value="">All Routes</option>
+                    {taskTemplates.map((template) => (
+                      <option key={template.id} value={template.id}>
+                        {template.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
                 
                 <div>
                   <label className="text-sm font-medium text-mky-navy">Booking Status</label>
-                  <select className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-mky-navy focus:border-mky-navy">
+                  <select 
+                    value={selectedStatus}
+                    onChange={(e) => setSelectedStatus(e.target.value)}
+                    className="w-full mt-1 p-2 border rounded-md focus:ring-2 focus:ring-mky-navy focus:border-mky-navy"
+                  >
                     <option value="">All Status</option>
-                    <option value="confirmed">Confirmed</option>
-                    <option value="pending">Pending</option>
-                    <option value="shipped">Shipped</option>
-                    <option value="delivered">Delivered</option>
+                    <option value="submitted">Submitted</option>
+                    <option value="draft">Draft</option>
+                    <option value="processing">Processing</option>
+                    <option value="completed">Completed</option>
                   </select>
                 </div>
 
-                <Button className="w-full bg-mky-navy hover:bg-mky-navy/90">
-                  Apply Filters
-                </Button>
+                <div className="pt-2 border-t">
+                  <h4 className="text-sm font-medium text-mky-navy mb-2">Quick Actions</h4>
+                  <div className="space-y-2">
+                    <Button variant="outline" size="sm" className="w-full border-mky-navy text-mky-navy hover:bg-mky-navy hover:text-white">
+                      <Download className="h-4 w-4 mr-2" />
+                      Export Data
+                    </Button>
+                    <Button variant="outline" size="sm" className="w-full border-mky-navy text-mky-navy hover:bg-mky-navy hover:text-white">
+                      <Users className="h-4 w-4 mr-2" />
+                      Manage Users
+                    </Button>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </div>
