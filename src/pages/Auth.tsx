@@ -36,6 +36,11 @@ const Auth: React.FC = () => {
       const { error } = await signIn(email, password);
       
       if (error) {
+        // For invalid credentials, redirect to access denied page
+        if (error.message.includes('Invalid login credentials') || error.message.includes('invalid_credentials')) {
+          navigate('/access-denied');
+          return;
+        }
         setError(error.message);
       }
     } catch (error) {
