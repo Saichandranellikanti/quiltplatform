@@ -62,9 +62,9 @@ const MKYAdminDashboard: React.FC = () => {
                   <Calendar className="h-4 w-4 text-mky-navy" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-mky-navy">247</div>
+                  <div className="text-2xl font-bold text-mky-navy">0</div>
                   <p className="text-xs text-muted-foreground">
-                    +12% from last month
+                    No bookings yet
                   </p>
                 </CardContent>
               </Card>
@@ -77,9 +77,9 @@ const MKYAdminDashboard: React.FC = () => {
                   <DollarSign className="h-4 w-4 text-orange-700" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-orange-700">18</div>
+                  <div className="text-2xl font-bold text-orange-700">0</div>
                   <p className="text-xs text-muted-foreground">
-                    $45,200 total value
+                    No unpaid invoices
                   </p>
                 </CardContent>
               </Card>
@@ -107,9 +107,9 @@ const MKYAdminDashboard: React.FC = () => {
                   <Users className="h-4 w-4 text-blue-700" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-blue-700">12</div>
+                  <div className="text-2xl font-bold text-blue-700">1</div>
                   <p className="text-xs text-muted-foreground">
-                    Staff members
+                    Active staff
                   </p>
                 </CardContent>
               </Card>
