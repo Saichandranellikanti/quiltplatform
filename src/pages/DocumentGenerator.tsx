@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import MKYLogo from '@/components/MKYLogo';
 import { useAuth } from '@/hooks/useAuth';
+import { useTenant } from '@/hooks/useTenant';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
@@ -37,7 +38,8 @@ interface DocumentTemplate {
 
 const DocumentGenerator: React.FC = () => {
   const { bookingId } = useParams<{ bookingId: string }>();
-  const { signOut } = useAuth();
+  const { signOut, profile } = useAuth();
+  const { isMKY } = useTenant();
   const { toast } = useToast();
   const [booking, setBooking] = useState<Booking | null>(null);
   const [documentTemplates, setDocumentTemplates] = useState<DocumentTemplate[]>([]);
@@ -245,6 +247,17 @@ const DocumentGenerator: React.FC = () => {
     window.URL.revokeObjectURL(url);
   };
 
+  const getDashboardUrl = () => {
+    if (!isMKY) return '/home';
+    
+    if (profile?.role === 'Admin') {
+      return '/mky-admin';
+    } else if (profile?.role === 'Staff') {
+      return '/mky-staff';
+    }
+    return '/home';
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -259,7 +272,7 @@ const DocumentGenerator: React.FC = () => {
         <Card>
           <CardContent className="p-6">
             <p>Booking not found</p>
-            <Button onClick={() => window.location.href = '/mky-admin'} className="mt-4">
+            <Button onClick={() => window.location.href = getDashboardUrl()} className="mt-4">
               Back to Dashboard
             </Button>
           </CardContent>
@@ -284,7 +297,7 @@ const DocumentGenerator: React.FC = () => {
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={() => window.location.href = '/mky-admin'}
+              onClick={() => window.location.href = getDashboardUrl()}
               className="text-white hover:bg-white/10"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
