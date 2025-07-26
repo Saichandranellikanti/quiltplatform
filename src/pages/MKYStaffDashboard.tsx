@@ -3,7 +3,8 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { LogOut, Settings } from 'lucide-react';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { LogOut, Settings, File, FileText, Calendar } from 'lucide-react';
 import MKYLogo from '@/components/MKYLogo';
 import { useAuth } from '@/hooks/useAuth';
 import DynamicBookingForm from '@/components/DynamicBookingForm';
@@ -18,6 +19,27 @@ const MKYStaffDashboard: React.FC = () => {
     if (user) {
       fetchBookings();
       fetchTaskTemplates();
+      
+      // Set up real-time subscription for staff's bookings
+      const bookingsChannel = supabase
+        .channel('staff_bookings_changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*',
+            schema: 'public',
+            table: 'bookings',
+            filter: `user_id=eq.${user.id}`
+          },
+          () => {
+            fetchBookings(); // Refresh bookings when changes occur
+          }
+        )
+        .subscribe();
+
+      return () => {
+        supabase.removeChannel(bookingsChannel);
+      };
     }
   }, [user]);
 
@@ -30,8 +52,7 @@ const MKYStaffDashboard: React.FC = () => {
           task_templates (name)
         `)
         .eq('user_id', user?.id)
-        .order('created_at', { ascending: false })
-        .limit(5);
+        .order('created_at', { ascending: false });
 
       if (error) throw error;
       setBookings(data || []);
@@ -160,6 +181,78 @@ const MKYStaffDashboard: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
+
+        {/* Live Bookings Table */}
+        <div className="mt-12">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileText className="h-5 w-5 text-mky-navy" />
+                My Bookings ({bookings.length})
+              </CardTitle>
+              <CardDescription>
+                All your submitted bookings with real-time updates
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {bookings.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Route</TableHead>
+                      <TableHead>Client</TableHead>
+                      <TableHead>Cargo</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Submitted</TableHead>
+                      <TableHead>Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {bookings.map((booking) => (
+                      <TableRow key={booking.id}>
+                        <TableCell className="font-medium">
+                          {booking.task_templates?.name || 'Unknown Route'}
+                        </TableCell>
+                        <TableCell>
+                          {booking.booking_data?.client_address?.split('\n')[0] || 
+                           booking.booking_data?.client_name || 'N/A'}
+                        </TableCell>
+                        <TableCell className="max-w-[200px] truncate">
+                          {booking.booking_data?.cargo_description || 'N/A'}
+                        </TableCell>
+                        <TableCell>
+                          <Badge variant={booking.status === 'Submitted' ? 'default' : 'secondary'}>
+                            {booking.status}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          {new Date(booking.created_at).toLocaleDateString()} {' '}
+                          {new Date(booking.created_at).toLocaleTimeString()}
+                        </TableCell>
+                        <TableCell>
+                          <Button
+                            size="sm"
+                            onClick={() => window.location.href = `/generate-documents/${booking.id}`}
+                            className="bg-mky-navy hover:bg-mky-navy/90"
+                          >
+                            <File className="h-3 w-3 mr-1" />
+                            Generate Docs
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="text-center py-12 text-muted-foreground">
+                  <FileText className="h-16 w-16 mx-auto mb-4 opacity-50" />
+                  <h3 className="text-lg font-medium mb-2">No Bookings Yet</h3>
+                  <p>Submit your first booking using the form above to get started</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </main>
     </div>
