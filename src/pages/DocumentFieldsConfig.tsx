@@ -63,11 +63,23 @@ const DocumentFieldsConfig: React.FC = () => {
     { value: 'phone', label: 'Phone' },
     { value: 'textarea', label: 'Text Area' },
     { value: 'select', label: 'Dropdown' },
+    // Auto-populated fields from booking data
     { value: 'auto_booking_code', label: 'Auto: Booking Code' },
     { value: 'auto_client_name', label: 'Auto: Client Name' },
     { value: 'auto_route', label: 'Auto: Shipping Route' },
     { value: 'auto_vessel_details', label: 'Auto: Vessel Details' },
-    { value: 'auto_cargo_info', label: 'Auto: Cargo Information' }
+    { value: 'auto_cargo_info', label: 'Auto: Cargo Information' },
+    // Predefined shipping fields
+    { value: 'client_address', label: 'Client Address' },
+    { value: 'vat_id', label: 'VAT ID' },
+    { value: 'exporter_tax_id', label: 'Exporter Tax ID' },
+    { value: 'importer_tax_id', label: 'Importer Tax ID' },
+    { value: 'cargo_description', label: 'Cargo Description' },
+    { value: 'units', label: 'Units' },
+    { value: 'weight_kg', label: 'Weight (kg)' },
+    { value: 'port_of_loading', label: 'Port of Loading' },
+    { value: 'port_of_discharge', label: 'Port of Discharge' },
+    { value: 'marks', label: 'Marks' }
   ];
 
   const documentTypes = {
