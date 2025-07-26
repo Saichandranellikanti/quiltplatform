@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,80 +15,27 @@ import {
   LogOut,
   Eye,
   Settings,
-  File
+  File,
+  Edit,
+  History
 } from 'lucide-react';
 import MKYLogo from '@/components/MKYLogo';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/integrations/supabase/client';
+import { useBookings } from '@/hooks/useBookings';
+import { useTaskTemplates } from '@/hooks/useTaskTemplates';
+import { BookingEditForm } from '@/components/BookingEditForm';
+import { AuditLogViewer } from '@/components/AuditLogViewer';
+import type { Booking } from '@/hooks/useBookings';
 
 const MKYAdminDashboard: React.FC = () => {
-  const { signOut, user, profile } = useAuth();
-  const [bookings, setBookings] = useState<any[]>([]);
-  const [taskTemplates, setTaskTemplates] = useState<any[]>([]);
+  const { signOut } = useAuth();
+  const { bookings, loading } = useBookings();
+  const { templates: taskTemplates } = useTaskTemplates();
   const [selectedRoute, setSelectedRoute] = useState<string>('');
   const [selectedStatus, setSelectedStatus] = useState<string>('');
-  const [totalBookings, setTotalBookings] = useState(0);
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [auditBookingId, setAuditBookingId] = useState<string>('');
 
-  useEffect(() => {
-    fetchBookings();
-    fetchTaskTemplates();
-    
-    // Set up real-time subscription for bookings
-    const bookingsChannel = supabase
-      .channel('bookings_changes')
-      .on(
-        'postgres_changes',
-        {
-          event: '*',
-          schema: 'public',
-          table: 'bookings'
-        },
-        () => {
-          fetchBookings(); // Refresh bookings when any change occurs
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(bookingsChannel);
-    };
-  }, []);
-
-  const fetchBookings = async () => {
-    try {
-      console.log('Fetching bookings...');
-      const { data, error } = await supabase
-        .from('bookings')
-        .select(`
-          *,
-          task_templates (name)
-        `)
-        .order('created_at', { ascending: false });
-
-      console.log('Bookings query result:', { data, error });
-      if (error) throw error;
-      setBookings(data || []);
-      setTotalBookings(data?.length || 0);
-      console.log('Set bookings:', data?.length || 0);
-    } catch (error) {
-      console.error('Error fetching bookings:', error);
-    }
-  };
-
-  const fetchTaskTemplates = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('task_templates')
-        .select('*')
-        .eq('is_active', true)
-        .order('name');
-
-      if (error) throw error;
-      setTaskTemplates(data || []);
-    } catch (error) {
-      console.error('Error fetching task templates:', error);
-    }
-  };
 
   const filteredBookings = bookings.filter(booking => {
     const routeMatch = !selectedRoute || booking.task_template_id === selectedRoute;
@@ -139,9 +86,9 @@ const MKYAdminDashboard: React.FC = () => {
                   <Calendar className="h-4 w-4 text-mky-navy" />
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold text-mky-navy">{totalBookings}</div>
+                  <div className="text-2xl font-bold text-mky-navy">{bookings.length}</div>
                   <p className="text-xs text-muted-foreground">
-                    {totalBookings === 0 ? 'No bookings yet' : 'Total submitted'}
+                    {bookings.length === 0 ? 'No bookings yet' : 'Total submitted'}
                   </p>
                 </CardContent>
               </Card>
@@ -207,14 +154,14 @@ const MKYAdminDashboard: React.FC = () => {
                 {filteredBookings.length > 0 ? (
                   <Table>
                      <TableHeader>
-                       <TableRow>
-                         <TableHead>Route</TableHead>
-                         <TableHead>Client</TableHead>
-                         <TableHead>Status</TableHead>
-                         <TableHead>Staff</TableHead>
-                         <TableHead>Submitted</TableHead>
-                         <TableHead>Actions</TableHead>
-                       </TableRow>
+                        <TableRow>
+                          <TableHead>Route</TableHead>
+                          <TableHead>Client</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Staff</TableHead>
+                          <TableHead>Submitted</TableHead>
+                          <TableHead>Actions</TableHead>
+                        </TableRow>
                      </TableHeader>
                     <TableBody>
                       {filteredBookings.map((booking) => (
@@ -222,31 +169,48 @@ const MKYAdminDashboard: React.FC = () => {
                           <TableCell className="font-medium">
                             {booking.task_templates?.name || 'Unknown Route'}
                           </TableCell>
-                          <TableCell>
-                            {booking.booking_data?.client_name || 'No client name'}
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant={booking.status === 'Submitted' ? 'default' : 'secondary'}>
-                              {booking.status}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            Staff User
-                          </TableCell>
                            <TableCell>
-                             {new Date(booking.created_at).toLocaleDateString()} {' '}
-                             {new Date(booking.created_at).toLocaleTimeString()}
+                             {booking.booking_data?.client_name || 'No client name'}
                            </TableCell>
                            <TableCell>
-                             <Button
-                               size="sm"
-                               onClick={() => window.location.href = `/generate-documents/${booking.id}`}
-                               className="bg-mky-navy hover:bg-mky-navy/90"
-                             >
-                               <File className="h-3 w-3 mr-1" />
-                               Generate Docs
-                             </Button>
+                             <Badge variant={booking.status === 'Submitted' ? 'default' : 'secondary'}>
+                               {booking.status}
+                             </Badge>
                            </TableCell>
+                           <TableCell>
+                             Staff User
+                           </TableCell>
+                            <TableCell>
+                              {new Date(booking.created_at).toLocaleDateString()} {' '}
+                              {new Date(booking.created_at).toLocaleTimeString()}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex space-x-1">
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setEditingBooking(booking)}
+                                  className="border-mky-navy text-mky-navy hover:bg-mky-navy hover:text-white"
+                                >
+                                  <Edit className="h-3 w-3" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => setAuditBookingId(booking.id)}
+                                  className="border-blue-500 text-blue-500 hover:bg-blue-500 hover:text-white"
+                                >
+                                  <History className="h-3 w-3" />
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  onClick={() => window.location.href = `/generate-documents/${booking.id}`}
+                                  className="bg-mky-navy hover:bg-mky-navy/90"
+                                >
+                                  <File className="h-3 w-3" />
+                                </Button>
+                              </div>
+                            </TableCell>
                         </TableRow>
                       ))}
                     </TableBody>
@@ -333,6 +297,24 @@ const MKYAdminDashboard: React.FC = () => {
           </div>
         </div>
       </main>
+
+      {/* Edit Booking Dialog */}
+      <BookingEditForm
+        booking={editingBooking}
+        isOpen={!!editingBooking}
+        onClose={() => setEditingBooking(null)}
+        onSuccess={() => {
+          // Bookings will be updated automatically via real-time subscription
+          setEditingBooking(null);
+        }}
+      />
+
+      {/* Audit Log Dialog */}
+      <AuditLogViewer
+        recordId={auditBookingId}
+        isOpen={!!auditBookingId}
+        onClose={() => setAuditBookingId('')}
+      />
     </div>
   );
 };

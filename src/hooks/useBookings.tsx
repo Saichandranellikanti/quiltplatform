@@ -120,6 +120,36 @@ export const useBookings = () => {
     }
   };
 
+  const updateBooking = async (bookingId: string, updates: Partial<Booking>) => {
+    try {
+      const { error } = await supabase
+        .from('bookings')
+        .update({
+          ...updates,
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', bookingId);
+
+      if (error) throw error;
+
+      toast({
+        title: "Success",
+        description: "Booking updated successfully"
+      });
+
+      // Refetch to get updated data
+      await fetchBookings();
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to update booking';
+      toast({
+        title: "Error",
+        description: errorMessage,
+        variant: "destructive"
+      });
+      throw err;
+    }
+  };
+
   // Set up real-time subscription
   useEffect(() => {
     if (!user) return;
@@ -175,6 +205,7 @@ export const useBookings = () => {
     fetchBookings,
     createBooking,
     updateBookingStatus,
+    updateBooking,
     refetch: fetchBookings
   };
 };

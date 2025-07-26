@@ -1,84 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { LogOut, Settings, File, FileText, Calendar } from 'lucide-react';
+import { LogOut, Settings, File, FileText, Edit } from 'lucide-react';
 import MKYLogo from '@/components/MKYLogo';
 import { useAuth } from '@/hooks/useAuth';
+import { useBookings } from '@/hooks/useBookings';
+import { useTaskTemplates } from '@/hooks/useTaskTemplates';
 import DynamicBookingForm from '@/components/DynamicBookingForm';
-import { supabase } from '@/integrations/supabase/client';
+import { BookingEditForm } from '@/components/BookingEditForm';
+import type { Booking } from '@/hooks/useBookings';
 
 const MKYStaffDashboard: React.FC = () => {
-  const { signOut, user } = useAuth();
-  const [bookings, setBookings] = useState<any[]>([]);
-  const [taskTemplates, setTaskTemplates] = useState<any[]>([]);
-
-  useEffect(() => {
-    if (user) {
-      fetchBookings();
-      fetchTaskTemplates();
-      
-      // Set up real-time subscription for staff's bookings
-      const bookingsChannel = supabase
-        .channel('staff_bookings_changes')
-        .on(
-          'postgres_changes',
-          {
-            event: '*',
-            schema: 'public',
-            table: 'bookings',
-            filter: `user_id=eq.${user.id}`
-          },
-          () => {
-            fetchBookings(); // Refresh bookings when changes occur
-          }
-        )
-        .subscribe();
-
-      return () => {
-        supabase.removeChannel(bookingsChannel);
-      };
-    }
-  }, [user]);
-
-  const fetchBookings = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('bookings')
-        .select(`
-          *,
-          task_templates (name)
-        `)
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setBookings(data || []);
-    } catch (error) {
-      console.error('Error fetching bookings:', error);
-    }
-  };
-
-  const fetchTaskTemplates = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('task_templates')
-        .select('*')
-        .eq('is_active', true)
-        .order('name');
-
-      if (error) throw error;
-      setTaskTemplates(data || []);
-    } catch (error) {
-      console.error('Error fetching task templates:', error);
-    }
-  };
+  const { signOut } = useAuth();
+  const { bookings, loading, refetch } = useBookings();
+  const { templates: taskTemplates } = useTaskTemplates();
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
 
   const handleBookingSubmit = () => {
     // Refresh bookings when a new one is submitted
-    fetchBookings();
+    refetch();
   };
 
   return (
@@ -231,14 +174,23 @@ const MKYStaffDashboard: React.FC = () => {
                           {new Date(booking.created_at).toLocaleTimeString()}
                         </TableCell>
                         <TableCell>
-                          <Button
-                            size="sm"
-                            onClick={() => window.location.href = `/generate-documents/${booking.id}`}
-                            className="bg-mky-navy hover:bg-mky-navy/90"
-                          >
-                            <File className="h-3 w-3 mr-1" />
-                            Generate Docs
-                          </Button>
+                          <div className="flex space-x-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => setEditingBooking(booking)}
+                              className="border-mky-navy text-mky-navy hover:bg-mky-navy hover:text-white"
+                            >
+                              <Edit className="h-3 w-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              onClick={() => window.location.href = `/generate-documents/${booking.id}`}
+                              className="bg-mky-navy hover:bg-mky-navy/90"
+                            >
+                              <File className="h-3 w-3" />
+                            </Button>
+                          </div>
                         </TableCell>
                       </TableRow>
                     ))}
@@ -255,6 +207,17 @@ const MKYStaffDashboard: React.FC = () => {
           </Card>
         </div>
       </main>
+
+      {/* Edit Booking Dialog */}
+      <BookingEditForm
+        booking={editingBooking}
+        isOpen={!!editingBooking}
+        onClose={() => setEditingBooking(null)}
+        onSuccess={() => {
+          // Bookings will be updated automatically via real-time subscription
+          setEditingBooking(null);
+        }}
+      />
     </div>
   );
 };
