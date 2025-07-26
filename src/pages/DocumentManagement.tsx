@@ -279,7 +279,7 @@ const DocumentManagement: React.FC = () => {
               <CardHeader>
                 <CardTitle>Existing Document Templates ({templates.length})</CardTitle>
                 <CardDescription>
-                  Manage your document templates
+                  Manage your document templates and configure fields for automation
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -317,17 +317,25 @@ const DocumentManagement: React.FC = () => {
                                 {template.is_active ? 'Active' : 'Inactive'}
                               </Badge>
                             </TableCell>
-                            <TableCell>
-                              <div className="flex gap-2">
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => handleToggleActive(template.id, template.is_active)}
-                                >
-                                  {template.is_active ? 'Deactivate' : 'Activate'}
-                                </Button>
-                              </div>
-                            </TableCell>
+                             <TableCell>
+                               <div className="flex gap-2">
+                                 <Button
+                                   size="sm"
+                                   variant="outline"
+                                   onClick={() => window.location.href = `/document-fields/${template.id}`}
+                                 >
+                                   <Edit className="h-3 w-3 mr-1" />
+                                   Configure Fields
+                                 </Button>
+                                 <Button
+                                   size="sm"
+                                   variant="outline"
+                                   onClick={() => handleToggleActive(template.id, template.is_active)}
+                                 >
+                                   {template.is_active ? 'Deactivate' : 'Activate'}
+                                 </Button>
+                               </div>
+                             </TableCell>
                           </TableRow>
                         );
                       })}

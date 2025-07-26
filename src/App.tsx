@@ -6,6 +6,8 @@ import Auth from "./pages/Auth";
 import AccessDenied from "./pages/AccessDenied";
 import MKYAdminDashboard from "./pages/MKYAdminDashboard";
 import MKYStaffDashboard from "./pages/MKYStaffDashboard";
+import DocumentManagement from "./pages/DocumentManagement";
+import DocumentFieldsConfig from "./pages/DocumentFieldsConfig";
 import TenantGateway from "./components/TenantGateway";
 import NotFound from "./pages/NotFound";
 import Features from "./pages/Features";
@@ -27,6 +29,8 @@ const App = () => {
             <Route path="/access-denied" element={<AccessDenied />} />
             <Route path="/mky-admin" element={<MKYAdminDashboard />} />
             <Route path="/mky-staff" element={<MKYStaffDashboard />} />
+            <Route path="/document-management" element={<DocumentManagement />} />
+            <Route path="/document-fields/:templateId" element={<DocumentFieldsConfig />} />
             <Route path="/features" element={<Features />} />
             <Route path="/use-cases" element={<UseCases />} />
             <Route path="/how-it-works" element={<HowItWorks />} />
