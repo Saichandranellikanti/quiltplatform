@@ -22,6 +22,16 @@ const Header: React.FC = () => {
     { href: '/about', label: 'About' }
   ];
 
+  const staffNavItems = [
+    { href: '/mky-staff', label: 'Dashboard' },
+    { href: '/document-management', label: 'Document Management' }
+  ];
+
+  const adminNavItems = [
+    { href: '/mky-admin', label: 'Admin Dashboard' },
+    { href: '/document-management', label: 'Document Management' }
+  ];
+
   const isActivePath = (path: string) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
@@ -50,7 +60,9 @@ const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center space-x-8">
-            {navItems.map((item) => (
+            {(user && profile?.role === 'Staff' ? staffNavItems : 
+              user && profile?.role === 'Admin' ? adminNavItems : 
+              navItems).map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
@@ -108,7 +120,9 @@ const Header: React.FC = () => {
         {mobileMenuOpen && (
           <div className="lg:hidden py-4 border-t border-border">
             <nav className="flex flex-col space-y-4">
-              {navItems.map((item) => (
+              {(user && profile?.role === 'Staff' ? staffNavItems : 
+                user && profile?.role === 'Admin' ? adminNavItems : 
+                navItems).map((item) => (
                 <Link
                   key={item.href}
                   to={item.href}
