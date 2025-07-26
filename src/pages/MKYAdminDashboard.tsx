@@ -54,18 +54,20 @@ const MKYAdminDashboard: React.FC = () => {
 
   const fetchBookings = async () => {
     try {
+      console.log('Fetching bookings...');
       const { data, error } = await supabase
         .from('bookings')
         .select(`
           *,
-          task_templates (name),
-          users (name, email)
+          task_templates (name)
         `)
         .order('created_at', { ascending: false });
 
+      console.log('Bookings query result:', { data, error });
       if (error) throw error;
       setBookings(data || []);
       setTotalBookings(data?.length || 0);
+      console.log('Set bookings:', data?.length || 0);
     } catch (error) {
       console.error('Error fetching bookings:', error);
     }
@@ -226,7 +228,7 @@ const MKYAdminDashboard: React.FC = () => {
                             </Badge>
                           </TableCell>
                           <TableCell>
-                            {booking.users?.name || booking.users?.email || 'Unknown'}
+                            Staff User
                           </TableCell>
                           <TableCell>
                             {new Date(booking.created_at).toLocaleDateString()} {' '}
