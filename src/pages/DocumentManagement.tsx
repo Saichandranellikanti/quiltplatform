@@ -31,7 +31,7 @@ interface DocumentTemplate {
 }
 
 const DocumentManagement: React.FC = () => {
-  const { signOut } = useAuth();
+  const { signOut, profile } = useAuth();
   const { toast } = useToast();
   const [templates, setTemplates] = useState<DocumentTemplate[]>([]);
   const [isCreating, setIsCreating] = useState(false);
@@ -148,10 +148,16 @@ const DocumentManagement: React.FC = () => {
             <Button 
               variant="ghost" 
               size="sm" 
-              onClick={() => window.location.href = '/mky-admin'}
+              onClick={() => {
+                if (profile?.role === 'Admin') {
+                  window.location.href = '/mky-admin';
+                } else {
+                  window.location.href = '/mky-staff';
+                }
+              }}
               className="text-white hover:bg-white/10"
             >
-              Back to Admin
+              Back to Dashboard
             </Button>
             <Button variant="ghost" size="sm" onClick={signOut} className="text-white hover:bg-white/10">
               <LogOut className="h-4 w-4 mr-2" />
