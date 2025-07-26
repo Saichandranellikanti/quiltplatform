@@ -10,8 +10,8 @@ interface User {
   id: string;
   email: string;
   name: string;
-  role: 'Admin' | 'Staff' | 'Finance' | 'CRMUser';
-  status: 'Active' | 'Inactive';
+  role: string;
+  status: string;
   company?: string;
 }
 
@@ -36,8 +36,8 @@ export const UserEditForm: React.FC<UserEditFormProps> = ({ user, onClose }) => 
     defaultValues: user ? {
       email: user.email,
       name: user.name,
-      role: user.role,
-      status: user.status,
+      role: user.role as FormData['role'],
+      status: user.status as FormData['status'],
       company: user.company || '',
     } : {
       email: '',

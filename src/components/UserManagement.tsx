@@ -42,23 +42,23 @@ export const UserManagement: React.FC = () => {
     {
       key: 'role' as keyof User,
       label: 'Role',
-      render: (value: string) => (
-        <Badge variant="secondary">{value}</Badge>
+      render: (user: User) => (
+        <Badge variant="secondary">{user.role}</Badge>
       ),
     },
     {
       key: 'status' as keyof User,
       label: 'Status',
-      render: (value: string) => (
-        <Badge variant={value === 'Active' ? 'default' : 'destructive'}>
-          {value}
+      render: (user: User) => (
+        <Badge variant={user.status === 'Active' ? 'default' : 'destructive'}>
+          {user.status}
         </Badge>
       ),
     },
     {
       key: 'company' as keyof User,
       label: 'Company',
-      render: (value: string | undefined) => value || '-',
+      render: (user: User) => user.company || '-',
     },
     {
       key: 'actions' as keyof User,
