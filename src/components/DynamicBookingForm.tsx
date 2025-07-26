@@ -188,7 +188,7 @@ const DynamicBookingForm: React.FC<DynamicBookingFormProps> = ({ onSubmit }) => 
         );
 
       case 'select':
-        const options = field.field_options?.options || ['20ft Container', '40ft Container', '40ft HC Container'];
+        const options = Array.isArray(field.field_options) ? field.field_options : ['No options available'];
         return (
           <div key={field.id} className="space-y-2">
             <Label>
