@@ -31,11 +31,11 @@ const AppContent = () => {
     <>
       {!hideHeader && <Header />}
       <Routes>
-        <Route path="/" element={<TenantGateway />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<Home />} />
         <Route path="/auth" element={<Auth />} />
         <Route path="/access-denied" element={<AccessDenied />} />
         <Route path="/dashboard" element={<TenantGateway />} />
+        <Route path="/mky-admin" element={<MKYAdminDashboard />} />
         <Route path="/mky-staff" element={<MKYStaffDashboard />} />
         <Route path="/document-management" element={<DocumentManagement />} />
         <Route path="/document-fields/:templateId" element={<DocumentFieldsConfig />} />
