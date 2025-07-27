@@ -26,9 +26,10 @@ const Auth: React.FC = () => {
   });
 
   useEffect(() => {
+    // Only redirect if user is on auth page and already authenticated
     if (!loading && user && profile) {
-      // Redirect to tenant gateway which will handle proper routing
-      navigate('/');
+      // Redirect to dashboard for authenticated users
+      navigate('/dashboard');
     } else if (!loading && user && !profile) {
       // User exists but not in our users table
       navigate('/access-denied');
