@@ -63,9 +63,7 @@ const Header: React.FC = () => {
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-8">
-            {(user && profile?.role === 'Admin' ? adminNavItems : 
-              user && profile?.role === 'Staff' ? staffNavItems : 
-              navItems).map((item) => (
+            {navItems.map((item) => (
               <Link
                 key={item.href}
                 to={item.href}
@@ -116,9 +114,7 @@ const Header: React.FC = () => {
         {mobileMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 border-t border-border">
-              {(user && profile?.role === 'Admin' ? adminNavItems : 
-                user && profile?.role === 'Staff' ? staffNavItems : 
-                navItems).map((item) => (
+              {navItems.map((item) => (
                 <Link
                   key={item.href}
                   to={item.href}
