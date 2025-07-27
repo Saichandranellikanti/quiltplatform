@@ -6,166 +6,65 @@ import { Menu, X, LogOut, User } from 'lucide-react';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { Alert, AlertDescription } from './ui/alert';
-
 const Header: React.FC = () => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { user, profile, signOut } = useAuth();
-
-  const navItems = [
-    { href: '/', label: 'Home' },
-    { href: '/features', label: 'Features' },
-    { href: '/use-cases', label: 'Use Cases' },
-    { href: '/how-it-works', label: 'How It Works' },
-    { href: '/for-teams', label: 'For Teams' },
-    { href: '/pricing', label: 'Pricing' },
-    { href: '/about', label: 'About' }
-  ];
-
-  const staffNavItems = [
-    { href: '/mky-staff', label: 'Dashboard' },
-    { href: '/document-management', label: 'Document Management' }
-  ];
-
-  const adminNavItems = [
-    { href: '/mky-admin', label: 'Admin Dashboard' },
-    { href: '/document-management', label: 'Document Management' }
-  ];
-
+  const {
+    user,
+    profile,
+    signOut
+  } = useAuth();
+  const navItems = [{
+    href: '/',
+    label: 'Home'
+  }, {
+    href: '/features',
+    label: 'Features'
+  }, {
+    href: '/use-cases',
+    label: 'Use Cases'
+  }, {
+    href: '/how-it-works',
+    label: 'How It Works'
+  }, {
+    href: '/for-teams',
+    label: 'For Teams'
+  }, {
+    href: '/pricing',
+    label: 'Pricing'
+  }, {
+    href: '/about',
+    label: 'About'
+  }];
+  const staffNavItems = [{
+    href: '/mky-staff',
+    label: 'Dashboard'
+  }, {
+    href: '/document-management',
+    label: 'Document Management'
+  }];
+  const adminNavItems = [{
+    href: '/mky-admin',
+    label: 'Admin Dashboard'
+  }, {
+    href: '/document-management',
+    label: 'Document Management'
+  }];
   const isActivePath = (path: string) => {
     if (path === '/') return location.pathname === '/';
     return location.pathname.startsWith(path);
   };
-
   const handleSignOut = async () => {
     await signOut();
     window.location.href = '/auth';
   };
-
-  return (
-    <header className="bg-card/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
-      {profile?.status === 'Inactive' && (
-        <Alert variant="destructive" className="rounded-none border-x-0 border-t-0">
+  return <header className="bg-card/95 backdrop-blur-sm border-b border-border sticky top-0 z-50">
+      {profile?.status === 'Inactive' && <Alert variant="destructive" className="rounded-none border-x-0 border-t-0">
           <AlertDescription>
             Your account is inactive. Please contact admin.
           </AlertDescription>
-        </Alert>
-      )}
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <QuiltLogo variant="text" size="sm" />
-          </Link>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
-            {(user && profile?.role === 'Staff' ? staffNavItems : 
-              user && profile?.role === 'Admin' ? adminNavItems : 
-              navItems).map((item) => (
-              <Link
-                key={item.href}
-                to={item.href}
-                className={`text-sm font-medium transition-colors hover:text-accent ${
-                  isActivePath(item.href) 
-                    ? 'text-accent' 
-                    : 'text-muted-foreground'
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-          </nav>
-
-          {/* User Info and Actions */}
-          <div className="hidden lg:flex items-center space-x-4">
-            {user && profile ? (
-              <>
-                <div className="flex items-center space-x-2 text-sm">
-                  <User className="h-4 w-4" />
-                  <span>{profile.name}</span>
-                  <span className="text-muted-foreground">({profile.role})</span>
-                </div>
-                <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                  <LogOut className="h-4 w-4 mr-2" />
-                  Sign Out
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button variant="ghost" size="sm">
-                  Book a Demo
-                </Button>
-                <Button variant="hero" size="sm" asChild>
-                  <Link to="/auth">Sign In</Link>
-                </Button>
-              </>
-            )}
-          </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="lg:hidden p-2"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
-          </button>
-        </div>
-
-        {/* Mobile Menu */}
-        {mobileMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-border">
-            <nav className="flex flex-col space-y-4">
-              {(user && profile?.role === 'Staff' ? staffNavItems : 
-                user && profile?.role === 'Admin' ? adminNavItems : 
-                navItems).map((item) => (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  className={`text-sm font-medium transition-colors hover:text-accent ${
-                    isActivePath(item.href) 
-                      ? 'text-accent' 
-                      : 'text-muted-foreground'
-                  }`}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {item.label}
-                </Link>
-              ))}
-              <div className="flex flex-col space-y-2 pt-4">
-                {user && profile ? (
-                  <>
-                    <div className="flex items-center space-x-2 text-sm py-2">
-                      <User className="h-4 w-4" />
-                      <span>{profile.name}</span>
-                      <span className="text-muted-foreground">({profile.role})</span>
-                    </div>
-                    <Button variant="ghost" size="sm" onClick={handleSignOut}>
-                      <LogOut className="h-4 w-4 mr-2" />
-                      Sign Out
-                    </Button>
-                  </>
-                ) : (
-                  <>
-                    <Button variant="ghost" size="sm">
-                      Book a Demo
-                    </Button>
-                    <Button variant="hero" size="sm" asChild>
-                      <Link to="/auth">Sign In</Link>
-                    </Button>
-                  </>
-                )}
-              </div>
-            </nav>
-          </div>
-        )}
-      </div>
-    </header>
-  );
+        </Alert>}
+      
+    </header>;
 };
-
 export default Header;
