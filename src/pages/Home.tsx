@@ -1,6 +1,5 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import Header from '../components/Header';
 import Footer from '../components/Footer';
 import HeroSection from '../components/home/HeroSection';
 import IntroSection from '../components/home/IntroSection';
@@ -15,7 +14,6 @@ const Home: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       <main>
         <HeroSection />
         <IntroSection />
