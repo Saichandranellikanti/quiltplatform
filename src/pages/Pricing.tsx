@@ -11,43 +11,45 @@ const Pricing: React.FC = () => {
 
   const plans = [
     {
-      name: "Starter",
-      description: "Perfect for solo entrepreneurs and small businesses",
-      monthlyPrice: 29,
-      annualPrice: 290, // 2 months free
+      name: "Solo",
+      description: "Perfect for individual entrepreneurs and freelancers",
+      monthlyPrice: 19,
+      annualPrice: 190, // 2 months free
       features: [
         "Up to 100 customers",
         "Basic booking system",
         "Email notifications",
         "Customer database",
-        "Mobile-responsive design",
+        "Mobile app access",
         "Basic analytics",
-        "Email support"
+        "Email support",
+        "5GB storage"
       ],
       limitations: [
-        "Limited to 1 user",
-        "Basic templates only",
-        "Standard support"
+        "Single user only",
+        "Basic templates"
       ],
       popular: false,
       cta: "Start Free Trial"
     },
     {
-      name: "Professional",
-      description: "For growing businesses that need advanced features",
-      monthlyPrice: 79,
-      annualPrice: 790, // 2 months free
+      name: "Business",
+      description: "For small to medium businesses ready to scale",
+      monthlyPrice: 49,
+      annualPrice: 490, // 2 months free
       features: [
-        "Up to 1,000 customers",
-        "Advanced booking & scheduling",
-        "SMS & email automation",
-        "Team collaboration (up to 5 users)",
+        "Up to 2,500 customers",
+        "Advanced booking & automation",
+        "SMS & email marketing",
+        "Up to 10 team members",
         "Custom forms & workflows",
-        "Advanced analytics & reporting",
-        "Payment processing integration",
+        "Advanced analytics",
+        "Payment processing",
         "Document management",
         "Priority support",
-        "Custom branding"
+        "Custom branding",
+        "100GB storage",
+        "API access"
       ],
       limitations: [],
       popular: true,
@@ -55,22 +57,23 @@ const Pricing: React.FC = () => {
     },
     {
       name: "Enterprise",
-      description: "For large organizations with complex needs",
-      monthlyPrice: 199,
-      annualPrice: 1990, // 2 months free
+      description: "For large organizations with advanced needs",
+      monthlyPrice: 149,
+      annualPrice: 1490, // 2 months free
       features: [
         "Unlimited customers",
-        "Full platform access",
-        "Advanced team management",
+        "Unlimited team members",
+        "Advanced security & compliance",
         "Custom integrations",
-        "Advanced security features",
         "Dedicated account manager",
         "White-label options",
-        "API access",
+        "Advanced API access",
         "SSO integration",
         "24/7 phone support",
-        "Custom training",
-        "SLA guarantee"
+        "Custom training & onboarding",
+        "Unlimited storage",
+        "SLA guarantee",
+        "Advanced reporting suite"
       ],
       limitations: [],
       popular: false,
