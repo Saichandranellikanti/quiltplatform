@@ -2,8 +2,28 @@ import React from 'react';
 import { Button } from '../ui/button';
 import QuiltLogo from '../QuiltLogo';
 import { ArrowRight, Play } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
+import { useNavigation } from '@/hooks/useNavigation';
 
 const HeroSection: React.FC = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { goToDashboard } = useNavigation();
+
+  const handleGetStarted = () => {
+    if (user) {
+      goToDashboard();
+    } else {
+      navigate('/auth?mode=signup');
+    }
+  };
+
+  const handleWatchDemo = () => {
+    // TODO: Implement demo functionality
+    console.log('Watch demo clicked');
+  };
+
   return (
     <section className="relative bg-gradient-hero text-white overflow-hidden">
       <div className="absolute inset-0 bg-black/10"></div>
@@ -41,13 +61,15 @@ const HeroSection: React.FC = () => {
             <Button 
               size="lg" 
               className="bg-white text-quilt-navy hover:bg-white/90 shadow-large"
+              onClick={handleGetStarted}
             >
-              Get Started Free
+              {user ? 'Go to Dashboard' : 'Get Started Free'}
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
             <Button 
               size="lg"
               className="bg-white/20 text-white border border-white/30 hover:bg-white/30 backdrop-blur-sm"
+              onClick={handleWatchDemo}
             >
               <Play className="mr-2 h-5 w-5" />
               Watch Demo

@@ -17,6 +17,7 @@ interface AuthContextType {
   profile: UserProfile | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
 }
 
@@ -100,6 +101,24 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const signUp = async (email: string, password: string) => {
+    try {
+      setLoading(true);
+      const redirectUrl = `${window.location.origin}/`;
+      
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: redirectUrl
+        }
+      });
+      return { error };
+    } catch (error) {
+      return { error };
+    }
+  };
+
   const cleanupAuthState = () => {
     // Remove all Supabase auth keys from localStorage
     Object.keys(localStorage).forEach((key) => {
@@ -151,6 +170,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         profile,
         loading,
         signIn,
+        signUp,
         signOut,
       }}
     >
