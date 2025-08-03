@@ -1,5 +1,4 @@
 import React from 'react';
-import Header from '../components/Header';
 import Footer from '../components/Footer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -111,7 +110,6 @@ const ForTeams: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
       <main className="py-20">
         {/* Hero Section */}
         <div className="container mx-auto px-4 text-center mb-20">
