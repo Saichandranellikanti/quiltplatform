@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface QuiltLogoProps {
@@ -38,7 +39,7 @@ const QuiltLogo: React.FC<QuiltLogoProps> = ({
         <div className="grid grid-cols-2 gap-1">
           <div className="w-4 h-4 bg-quilt-orange rounded-sm"></div>
           <div className="w-4 h-4 bg-quilt-turquoise rounded-sm"></div>
-          <div className="w-4 h-4 bg-quilt-navy rounded-sm"></div>
+          <div className="w-4 h-4 bg-quilt-orange rounded-sm"></div>
           <div className="w-4 h-4 bg-quilt-green rounded-sm"></div>
         </div>
         <span className="text-2xl font-bold text-foreground">Quilt</span>
